@@ -1,0 +1,32 @@
+language: "es"
+
+pipeline:
+- name: "WhitespaceTokenizer"
+- name: "RegexFeaturizer"
+- name: "CRFEntityExtractor"
+- name: "DucklingHTTPExtractor"
+  # url of the running duckling server
+  url: "http://23.102.50.28:8000/parse"
+  # dimensions to extract
+  dimensions: ["number", "time", "amount-of-money", "distance"]
+  # allows you to configure the locale, by default the language is
+  # used
+  locale: "es_ES"
+  # if not set the default timezone of Duckling is going to be used
+  # needed to calculate dates from relative expressions like "tomorrow"
+- name: "EntitySynonymMapper"
+- name: "CountVectorsFeaturizer"
+- name: "CountVectorsFeaturizer"
+  analyzer: "char_wb"
+  min_ngram: 1
+  max_ngram: 4
+- name: "EmbeddingIntentClassifier"
+
+policies:
+  - name: KerasPolicy
+  - name: MemoizationPolicy
+  - name: MappingPolicy
+  - name: FallbackPolicy
+    nlu_threshold: 0.1
+    core_threshold: 0.2
+    fallback_action_name: 'utter_default'
