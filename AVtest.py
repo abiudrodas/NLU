@@ -10,7 +10,10 @@ import requests
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
+import calendar
+import locale
+locale.setlocale(locale.LC_ALL, 'es_ES')
 
 # defining the api-endpoint
 NLU_ENDPOINT = "http://localhost:5005/model/parse"
@@ -75,6 +78,7 @@ class RRHH():
             month = now.strftime("%m")
             day = now.strftime("%d")
             hour = now.strftime("%H:%M:%S")
+            days = list(calendar.day_name)
 
             if NLU_response["intent"]["name"] in self.basic_intents:
                 self.dialog_message["message"] = NLU_response["intent"]["name"]
@@ -144,13 +148,31 @@ class RRHH():
                                 now = datetime.strptime(day + "/" + month + "/" + year, date_format)
 
                                 if user_date_formated > now:
-                                    delta = user_date_formated - now
-                                    real_date = user_date_formated - delta
-                                    real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%y')
-                                    new_dic = {"day": user_hour + " " + real_date}
+                                    user_day_ = [word for word in days if word in NLU_response["text"]]
+                                    if entity[0] == "hour":
+                                        if len(user_day_) < 1:
+                                            delta = user_date_formated - now
+                                            real_date = user_date_formated - delta
+                                            real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%y')
+                                            new_dic = {"day": user_hour + " " + real_date}
+                                        else:
+                                            real_date = user_date_formated - timedelta(days=7)
+                                            real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime(
+                                                '%d/%m/%y')
+                                            new_dic = {"day": user_hour + " " + real_date}
+
+                                    elif entity[0] == "day":
+                                        real_date = user_date_formated - timedelta(days=7)
+                                        print(real_date)
+                                        real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime(
+                                            '%d/%m/%y')
+                                        new_dic = {"day": user_hour + " " + real_date}
+
 
                                 else:
-                                    new_dic = {"day": user_hour + " " + str(user_date_formated)}
+                                    real_date = datetime.strptime(str(user_date_formated), '%Y-%m-%d %H:%M:%S').strftime(
+                                        '%d/%m/%y')
+                                    new_dic = {"day": user_hour + " " + str(real_date)}
 
                     self.dialog_message["message"] = NLU_response["intent"]["name"] + str(
                         new_dic).replace("'", '"')
