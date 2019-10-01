@@ -5,22 +5,22 @@ from flask import make_response, send_from_directory
 from flask import request
 from flask import abort
 import os
-from flask_restful import Resource, Api
+#from flask_restful import Resource, Api
 import requests
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 import re
 from datetime import datetime, timedelta
 import calendar
-import locale
-locale.setlocale(locale.LC_ALL, 'es_ES')
+# import locale
+# locale.setlocale(locale.LC_ALL, 'es_ES')
 
 # defining the api-endpoint
-NLU_ENDPOINT = "http://localhost:5005/model/parse"
-CORE_ENDPOINT = "http://localhost:5006/webhooks/rest/webhook"
+NLU_ENDPOINT = "http://rrhh.northeurope.cloudapp.azure.com:5005/model/parse"
+CORE_ENDPOINT = "http://rrhh.northeurope.cloudapp.azure.com:5006/webhooks/rest/webhook"
 
 app = Flask(__name__)
-api = Api(app)
+#api = Api(app)
 
 @app.errorhandler(404)
 def not_found(error):
