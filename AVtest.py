@@ -32,7 +32,7 @@ class RRHH():
         self.nlu_message = {"text":None}
         self.dialog_message = {"message":None}
         self.basic_intents = ["greet", "fine_ask", "fine_normal", "thanks", "bye", "set_vacations",
-                              "get_vacations_available", "vacation_range"]
+                              "get_vacations_available", "vacation_range", "get_schedule"]
 
     def get_entities(self, NLU_response):
         entities_result = []
@@ -181,6 +181,15 @@ class RRHH():
                     register = hour + " " + day + "/" + month + "/" + year
                     new_dic = {"day":register}
                     self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
+
+            elif NLU_response["intent"]["name"] in ["get_schedule_in", "get_schedule_out" ]:
+                entities = self.get_entities(NLU_response)
+                if len(entities) == 0:
+
+                    register = day + "/" + month + "/" + year
+                    new_dic = {"day": register}
+                    self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
+
 
         return self.dialog_message
 

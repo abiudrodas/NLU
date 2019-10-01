@@ -62,6 +62,7 @@
 - quiero registrar la hora de entrada de ayer
 - marcar mi entrada
 - checar la entrada del lunes
+- entro
 
 ## intent:set_schedule_out
 - quiero registrar mi salida
@@ -69,6 +70,23 @@
 - quiero registrar la hora de salida de ayer
 - marcar mi salida
 - checar la salida del lunes
+- salgo
+
+## intent:get_schedule_in
+- a que hora he entrado?
+- cuando registre mi entrada?
+- dime mi hora de entrada
+- dame la hora de entrada
+- cuando entré?
+- a que hora entré
+
+## intent:get_schedule_out
+- a que hora he salido?
+- cuando registre mi salida?
+- dime mi hora de salida
+- dame la hora de salida
+- cuando salí?
+- a que hora salí?
 
 ## intent:thanks
 - gracias
@@ -111,6 +129,9 @@
 - todo el mes de agosto
 - el proximo lunes
 - el 17 de diciembre
+- mañana
+- pasado mañana
+- el jueves que viene
 
 ## regex:id_code
 - ([a-z]|[A-Z]|[0-9])[0-9]{7}([a-z]|[A-Z]|[0-9])
