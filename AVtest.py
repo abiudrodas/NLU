@@ -9,7 +9,8 @@ from flask_restful import Resource, Api
 import requests
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
-
+import re
+from datetime import datetime
 
 # defining the api-endpoint
 NLU_ENDPOINT = "http://localhost:5005/model/parse"
@@ -28,8 +29,7 @@ class RRHH():
         self.nlu_message = {"text":None}
         self.dialog_message = {"message":None}
         self.basic_intents = ["greet", "fine_ask", "fine_normal", "thanks", "bye", "set_vacations",
-                              "get_vacations_available", "set_schedule_in", "set_schedule_out", "vacation_range",
-                              "get_nomina"]
+                              "get_vacations_available", "vacation_range"]
 
     def get_entities(self, NLU_response):
         entities_result = []
@@ -37,10 +37,29 @@ class RRHH():
             entities = NLU_response["entities"]
             for entity in entities:
                 tem_vect = []
-                tem_vect.append(entity["entity"])
-                tem_vect.append(entity["value"])
-                entities_result.append(tem_vect)
+                if entity['extractor'] == "CRFEntityExtractor":
+                    tem_vect.append(entity["entity"])
+                    tem_vect.append(entity["value"])
+                    entities_result.append(tem_vect)
+                elif entity['extractor'] == "DucklingHTTPExtractor":
+                    if entity["entity"] == "time":
+                        if "grain" in entity["additional_info"]:
+                            tem_vect.append(entity["additional_info"]["grain"])
+                            tem_vect.append(entity["value"])
+                            entities_result.append(tem_vect)
+                        elif entity["additional_info"]["type"] == "interval":
+                            date_range = "from: " + entity["value"]["from"] + " - " + "to: " + entity["value"]["to"]
+                            tem_vect.append(entity["additional_info"]["type"])
+                            tem_vect.append(date_range)
+                            entities_result.append(tem_vect)
+                    elif entity["entity"] == "number":
+                        tem_vect.append(entity["entity"])
+                        tem_vect.append(entity["value"])
+                        entities_result.append(tem_vect)
         return entities_result
+
+    def _find_dates(self,string):
+        return re.findall("\d{4}[-]?\d{1,2}[-]?\d{1,2}[T]\d{1,2}:\d{1,2}:\d{1,2}[.]?\d{1,3}[-]\d{1,2}:\d{1,2}", string)
 
     def Convert(self, a):
         it = iter(a)
@@ -48,7 +67,15 @@ class RRHH():
         return res_dct
 
     def NLU_adaptation(self, NLU_response):
+
         if "intent" in NLU_response:
+
+            now = datetime.now()
+            year = now.strftime("%Y")
+            month = now.strftime("%m")
+            day = now.strftime("%d")
+            hour = now.strftime("%H:%M:%S")
+
             if NLU_response["intent"]["name"] in self.basic_intents:
                 self.dialog_message["message"] = NLU_response["intent"]["name"]
 
@@ -59,6 +86,80 @@ class RRHH():
                     if entity[0] == "id_code":
                         self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'",'"')
                         print(self.dialog_message)
+
+            elif NLU_response["intent"]["name"] == "get_nomina":
+                entities = self.get_entities(NLU_response)
+                print("Entidades: ",entities)
+                months = ""
+                for entity in entities:
+                    new_dic = self.Convert(entity)
+                    if entity[0] == "interval":
+                        dates = self._find_dates(new_dic["interval"])
+                        print("DATES: ",dates)
+                        new_dic["interval"] = ""
+                        for date in dates:
+                            date = date.split("-")
+                            if int(date[0]) > int(year):
+                                date[0] = year
+                            if int(date[1]) > int(month):
+                                date[1] = month
+                            new_dic["interval"] = new_dic["interval"] + date[1] + " " + date[0] + " "
+                        new_dic["interval"] = new_dic["interval"].strip()
+
+                    elif entity[0] == "month":
+                        dates = self._find_dates(new_dic["month"])
+                        new_dic["month"] = ""
+                        for date in dates:
+                            date = date.split("-")
+                            if int(date[0]) > int(year):
+                                date[0] = year
+                            if int(date[1]) > int(month):
+                                date[1] = month
+                        months = months + date[1] + " " + date[0] + "/"
+                        new_dic["month"] = months
+                        new_dic["month"] = new_dic["month"].strip("/")
+
+                    self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
+
+            elif NLU_response["intent"]["name"] in ["set_schedule_in", "set_schedule_out"]:
+                entities = self.get_entities(NLU_response)
+                print("Entidades: ",entities)
+
+                if len(entities) > 0:
+                    for entity in entities:
+                        new_dic = self.Convert(entity)
+                        print(new_dic)
+                        if entity[0] in ["day", "hour"]:
+                            dates = self._find_dates(new_dic[entity[0]])
+                            for date in dates:
+                                date = date.split('T')
+                                user_date = date[0]
+                                user_hour_temp = date[1].split(".")
+                                user_hour = user_hour_temp[0]
+
+                                user_date = user_date.split("-")
+                                date_format = "%d/%m/%Y"
+                                user_date_formated = datetime.strptime(
+                                    user_date[2] + "/" + user_date[1] + "/" + user_date[0], date_format)
+                                now = datetime.strptime(day + "/" + month + "/" + year, date_format)
+
+                                if user_date_formated > now:
+                                    delta = user_date_formated - now
+                                    real_date = user_date_formated - delta
+                                    real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%y')
+                                    new_dic = {"day": user_hour + " " + real_date}
+
+                                else:
+                                    new_dic = {"day": user_hour + " " + str(user_date_formated)}
+
+                    self.dialog_message["message"] = NLU_response["intent"]["name"] + str(
+                        new_dic).replace("'", '"')
+
+                else:
+                    register = hour + " " + day + "/" + month + "/" + year
+                    new_dic = {"day":register}
+                    self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
+
         return self.dialog_message
 
     def post(self, r):
@@ -68,10 +169,11 @@ class RRHH():
             print("NLU_message",self.nlu_message)
             NLU_response = requests.post(url=NLU_ENDPOINT, json=self.nlu_message)
             dialog_message = self.NLU_adaptation(NLU_response.json())
-            print(dialog_message)
+            print("Dialog Manager: ",dialog_message)
             dialog_answ = requests.post(url=CORE_ENDPOINT, json=dialog_message)
 
         return dialog_answ.json()
+        #return "OK"
 
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_ahoy_reply():
@@ -81,6 +183,26 @@ def sms_ahoy_reply():
 
     data = {"message":body}
     answ = rh.post(r=data)
+
+    A = []
+    for anw in answ:
+        print(anw["text"])
+        A.append(anw["text"])
+    print(A)
+
+    """Respond to incoming messages with a friendly SMS."""
+    # Start our response
+    resp = MessagingResponse()
+
+    # Add a message
+    resp.message("\n\n".join(A))
+
+    return str(resp)
+
+@app.route("/localtest", methods=['GET', 'POST'])
+def sms_test():
+    rh = RRHH()
+    answ = rh.post(r=request.json)
 
     A = []
     for anw in answ:
