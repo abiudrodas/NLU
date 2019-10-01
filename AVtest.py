@@ -32,7 +32,7 @@ class RRHH():
         self.nlu_message = {"text":None}
         self.dialog_message = {"message":None}
         self.basic_intents = ["greet", "fine_ask", "fine_normal", "thanks", "bye", "set_vacations",
-                              "get_vacations_available", "vacation_range", "get_schedule"]
+                              "get_vacations_available", "vacation_range"]
 
     def get_entities(self, NLU_response):
         entities_result = []
@@ -182,7 +182,7 @@ class RRHH():
                     new_dic = {"day":register}
                     self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
 
-            elif NLU_response["intent"]["name"] in ["get_schedule_in", "get_schedule_out" ]:
+            elif NLU_response["intent"]["name"] in ["get_schedule_in", "get_schedule_out"]:
                 entities = self.get_entities(NLU_response)
                 if len(entities) == 0:
 
@@ -190,6 +190,24 @@ class RRHH():
                     new_dic = {"day": register}
                     self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
 
+                else:
+                    for entity in entities:
+                        new_dic = self.Convert(entity)
+                        if entity[0] == "day":
+                            dates = self._find_dates(new_dic[entity[0]])
+                            for date in dates:
+                                date = date.split('T')
+                                user_date = date[0]
+
+                                user_date = user_date.split("-")
+                                date_format = "%d/%m/%Y"
+                                user_date_formated = datetime.strptime(
+                                    user_date[2] + "/" + user_date[1] + "/" + user_date[0], date_format)
+                                real_date = datetime.strptime(str(user_date_formated), '%Y-%m-%d %H:%M:%S').strftime(
+                                    '%d/%m/%y')
+                                new_dic = {"day": real_date}
+                    self.dialog_message["message"] = NLU_response["intent"]["name"] + str(
+                        new_dic).replace("'", '"')
 
         return self.dialog_message
 
