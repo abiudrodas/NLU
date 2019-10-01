@@ -48,13 +48,14 @@
 - quiero saber mis vacaciones
 
 ## intent:get_nomina
-- dame mi nomina
+- dame mi nómina
 - dame la nomina de este mes
 - muestrame la nomina del mes pasado
 - muestra la nomina de los ultimos dos meses
-- dame la nomina de hace 3 meses
+- dame la nómina de hace 3 meses
 - enseñame mis nominas desde junio
 - dame las nominas de mayo
+- dame la nómina de octubre 
 
 ## intent:set_schedule_in
 - quiero registrar mi entrada
@@ -132,6 +133,7 @@
 - mañana
 - pasado mañana
 - el jueves que viene
+- quiero pedirme el jueves
 
 ## regex:id_code
 - ([a-z]|[A-Z]|[0-9])[0-9]{7}([a-z]|[A-Z]|[0-9])

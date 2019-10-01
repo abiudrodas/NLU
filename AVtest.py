@@ -32,7 +32,7 @@ class RRHH():
         self.nlu_message = {"text":None}
         self.dialog_message = {"message":None}
         self.basic_intents = ["greet", "fine_ask", "fine_normal", "thanks", "bye", "set_vacations",
-                              "get_vacations_available", "vacation_range"]
+                              "get_vacations_available"]
 
     def get_entities(self, NLU_response):
         entities_result = []
@@ -95,35 +95,40 @@ class RRHH():
                 entities = self.get_entities(NLU_response)
                 print("Entidades: ",entities)
                 months = ""
-                for entity in entities:
-                    new_dic = self.Convert(entity)
-                    if entity[0] == "interval":
-                        dates = self._find_dates(new_dic["interval"])
-                        print("DATES: ",dates)
-                        new_dic["interval"] = ""
-                        for date in dates:
-                            date = date.split("-")
-                            if int(date[0]) > int(year):
-                                date[0] = year
-                            if int(date[1]) > int(month):
-                                date[1] = month
-                            new_dic["interval"] = new_dic["interval"] + date[1] + " " + date[0] + " "
-                        new_dic["interval"] = new_dic["interval"].strip()
-
-                    elif entity[0] == "month":
-                        dates = self._find_dates(new_dic["month"])
-                        new_dic["month"] = ""
-                        for date in dates:
-                            date = date.split("-")
-                            if int(date[0]) > int(year):
-                                date[0] = year
-                            if int(date[1]) > int(month):
-                                date[1] = month
-                        months = months + date[1] + " " + date[0] + "/"
-                        new_dic["month"] = months
-                        new_dic["month"] = new_dic["month"].strip("/")
-
+                if len(entities) == 0:
+                    new_dic = {}
+                    new_dic["month"] = month + " " + year
                     self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
+                else:
+                    for entity in entities:
+                        new_dic = self.Convert(entity)
+                        if entity[0] == "interval":
+                            dates = self._find_dates(new_dic["interval"])
+                            print("DATES: ",dates)
+                            new_dic["interval"] = ""
+                            for date in dates:
+                                date = date.split("-")
+                                if int(date[0]) > int(year):
+                                    date[0] = year
+                                if int(date[1]) > int(month):
+                                    date[1] = month
+                                new_dic["interval"] = new_dic["interval"] + date[1] + " " + date[0] + " "
+                            new_dic["interval"] = new_dic["interval"].strip()
+
+                        elif entity[0] == "month":
+                            dates = self._find_dates(new_dic["month"])
+                            new_dic["month"] = ""
+                            for date in dates:
+                                date = date.split("-")
+                                if int(date[0]) > int(year):
+                                    date[0] = year
+                                if int(date[1]) > int(month):
+                                    date[1] = month
+                            months = months + date[1] + " " + date[0] + "/"
+                            new_dic["month"] = months
+                            new_dic["month"] = new_dic["month"].strip("/")
+
+                        self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
 
             elif NLU_response["intent"]["name"] in ["set_schedule_in", "set_schedule_out"]:
                 entities = self.get_entities(NLU_response)
@@ -153,25 +158,25 @@ class RRHH():
                                         if len(user_day_) < 1:
                                             delta = user_date_formated - now
                                             real_date = user_date_formated - delta
-                                            real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%y')
+                                            real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')
                                             new_dic = {"day": user_hour + " " + real_date}
                                         else:
                                             real_date = user_date_formated - timedelta(days=7)
                                             real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime(
-                                                '%d/%m/%y')
+                                                '%d/%m/%Y')
                                             new_dic = {"day": user_hour + " " + real_date}
 
                                     elif entity[0] == "day":
                                         real_date = user_date_formated - timedelta(days=7)
                                         print(real_date)
                                         real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime(
-                                            '%d/%m/%y')
+                                            '%d/%m/%Y')
                                         new_dic = {"day": user_hour + " " + real_date}
 
 
                                 else:
                                     real_date = datetime.strptime(str(user_date_formated), '%Y-%m-%d %H:%M:%S').strftime(
-                                        '%d/%m/%y')
+                                        '%d/%m/%Y')
                                     new_dic = {"day": user_hour + " " + str(real_date)}
 
                     self.dialog_message["message"] = NLU_response["intent"]["name"] + str(
@@ -204,10 +209,45 @@ class RRHH():
                                 user_date_formated = datetime.strptime(
                                     user_date[2] + "/" + user_date[1] + "/" + user_date[0], date_format)
                                 real_date = datetime.strptime(str(user_date_formated), '%Y-%m-%d %H:%M:%S').strftime(
-                                    '%d/%m/%y')
+                                    '%d/%m/%Y')
                                 new_dic = {"day": real_date}
                     self.dialog_message["message"] = NLU_response["intent"]["name"] + str(
                         new_dic).replace("'", '"')
+
+            elif NLU_response["intent"]["name"] == "vacation_range":
+                entities = self.get_entities(NLU_response)
+
+                for entity in entities:
+                    new_dic = self.Convert(entity)
+                    if entity[0] == "interval":
+                        dates = self._find_dates(new_dic["interval"])
+                        print("DATES: ", dates)
+                        new_dic["interval"] = ""
+                        for date in dates:
+                            date = date.split('T')
+                            user_date = date[0]
+                            user_date = user_date.split("-")
+                            date_format = "%d/%m/%Y"
+                            user_date_formated = datetime.strptime(
+                                user_date[2] + "/" + user_date[1] + "/" + user_date[0], date_format)
+                            real_date = datetime.strptime(str(user_date_formated), '%Y-%m-%d %H:%M:%S').strftime(
+                                '%d/%m/%Y')
+                            new_dic["interval"] = new_dic["interval"] + real_date + " "
+                        new_dic["interval"] = new_dic["interval"].strip()
+                        print(new_dic)
+                        self.dialog_message["message"] = NLU_response["intent"]["name"] + str(
+                            new_dic).replace("'", '"')
+
+                    elif entity[0] == "day":
+                        dates = self._find_dates(new_dic["day"])
+                        new_dic["day"] = ""
+                        if len(dates) == 1:
+                            date = dates[0].split('T')
+                            user_date_formated = datetime.strptime(date[0], '%Y-%m-%d')
+                            real_date = datetime.strptime(str(user_date_formated), '%Y-%m-%d %H:%M:%S').strftime(
+                                '%d/%m/%Y')
+                            new_dic["day"] = real_date
+                    self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
 
         return self.dialog_message
 
