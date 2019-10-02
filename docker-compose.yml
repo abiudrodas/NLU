@@ -38,7 +38,7 @@ services:
   main-service:
     build: .
     environment:
-      LOCAL: FALSE
+      LOCAL: null
       LANG: es_ES
     ports:
       - "5005:5005"
