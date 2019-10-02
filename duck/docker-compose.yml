@@ -1,7 +1,0 @@
-version: "3"
-services:
-
-  duck-service:
-    image: "rasa/duckling"
-    ports:
-      - "8000:8000"
