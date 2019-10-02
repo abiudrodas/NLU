@@ -1,0 +1,41 @@
+
+version: "3"
+services:
+
+  duck-service:
+    image: "rasa/duckling"
+    ports:
+      - "8000:8000"
+      -
+  action-service:
+    build: ../AVCore/RRHH/actions/
+    ports:
+      - "5055:5055"
+    entrypoint: "rasa run actions --debug"
+
+  core-service:
+    build: ../AVCore/RRHH/
+    environment:
+      ACTIONS: http://action-service:5055/webhook
+    ports:
+      - "5006:5006"
+    # just keep server alive
+    entrypoint: "rasa run --debug"
+
+  nlu-service:
+    build: NLU/RRHH/
+    environment:
+      DUCK: http://duck-service:8000/parse
+    ports:
+      - "5005:5005"
+    # just keep server alive
+    entrypoint: "rasa run --enable-api --debug"
+
+  main-service:
+    build: .
+    environment:
+      LOCAL: FALSE
+    ports:
+      - "5005:5005"
+    # just keep server alive
+    entrypoint: "python AVtest.py"
