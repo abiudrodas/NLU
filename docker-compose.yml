@@ -28,10 +28,10 @@ services:
       - "5005:5005"
     entrypoint: "rasa run --enable-api --debug"
 
-    duck-service:
-      image: "rasa/duckling"
-      ports:
-        - "8000:8000"
+  duck-service:
+    image: "rasa/duckling"
+    ports:
+      - "8000:8000"
 
   main-service:
     build: .
