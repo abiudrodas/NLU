@@ -6,7 +6,8 @@ pipeline:
 - name: "CRFEntityExtractor"
 - name: "DucklingHTTPExtractor"
   # url of the running duckling server
-  url: "http://rrhh.northeurope.cloudapp.azure.com:8000/parse"
+  #url: "http://duck-service:8000/parse"
+  url: ${DUCK}
   # dimensions to extract
   dimensions: ["number", "time", "amount-of-money", "distance"]
   # allows you to configure the locale, by default the language is
