@@ -90,11 +90,11 @@ class RRHH():
                     new_dic = self.Convert(entity)
                     if entity[0] == "id_code":
                         self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'",'"')
-                        print(self.dialog_message)
+                        #print(self.dialog_message)
 
             elif NLU_response["intent"]["name"] == "get_nomina":
                 entities = self.get_entities(NLU_response)
-                print("Entidades: ",entities)
+                #print("Entidades: ",entities)
                 months = ""
                 if len(entities) == 0:
                     new_dic = {}
@@ -105,7 +105,7 @@ class RRHH():
                         new_dic = self.Convert(entity)
                         if entity[0] == "interval":
                             dates = self._find_dates(new_dic["interval"])
-                            print("DATES: ",dates)
+                            #print("DATES: ",dates)
                             new_dic["interval"] = ""
                             for date in dates:
                                 date = date.split("-")
@@ -133,12 +133,12 @@ class RRHH():
 
             elif NLU_response["intent"]["name"] in ["set_schedule_in", "set_schedule_out"]:
                 entities = self.get_entities(NLU_response)
-                print("Entidades: ",entities)
+                #print("Entidades: ",entities)
 
                 if len(entities) > 0:
                     for entity in entities:
                         new_dic = self.Convert(entity)
-                        print(new_dic)
+                        #print(new_dic)
                         if entity[0] in ["day", "hour"]:
                             dates = self._find_dates(new_dic[entity[0]])
                             for date in dates:
@@ -169,7 +169,7 @@ class RRHH():
 
                                     elif entity[0] == "day":
                                         real_date = user_date_formated - timedelta(days=7)
-                                        print(real_date)
+                                        #print(real_date)
                                         real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime(
                                             '%d/%m/%Y')
                                         new_dic = {"day": user_hour + " " + real_date}
@@ -222,7 +222,7 @@ class RRHH():
                     new_dic = self.Convert(entity)
                     if entity[0] == "interval":
                         dates = self._find_dates(new_dic["interval"])
-                        print("DATES: ", dates)
+                        #print("DATES: ", dates)
                         new_dic["interval"] = ""
                         for date in dates:
                             date = date.split('T')
@@ -235,7 +235,7 @@ class RRHH():
                                 '%d/%m/%Y')
                             new_dic["interval"] = new_dic["interval"] + real_date + " "
                         new_dic["interval"] = new_dic["interval"].strip()
-                        print(new_dic)
+                        #print(new_dic)
                         self.dialog_message["message"] = NLU_response["intent"]["name"] + str(
                             new_dic).replace("'", '"')
 
@@ -278,7 +278,7 @@ def sms_ahoy_reply():
     for anw in answ:
         #print(anw["text"])
         A.append(anw["text"])
-    print(A)
+    #print(A)
 
     """Respond to incoming messages with a friendly SMS."""
     # Start our response
@@ -298,7 +298,7 @@ def sms_test():
     for anw in answ:
         #print(anw["text"])
         A.append(anw["text"])
-    print(A)
+    #print(A)
 
     """Respond to incoming messages with a friendly SMS."""
     # Start our response
