@@ -15,7 +15,7 @@ services:
     environment:
       - LANG=es_ES
     ports:
-      - "5006:5006"
+      - "5005:5006"
     entrypoint: "rasa run --debug"
 
   nlu-service:
@@ -37,6 +37,6 @@ services:
       - LOCAL=null
       - LANG=es_ES
     ports:
-      - "5005:5005"
+      - "5060:5060"
     # just keep server alive
     entrypoint: "python AVtest.py"
