@@ -259,7 +259,7 @@ class RRHH():
             #print("NLU_message",self.nlu_message)
             NLU_response = requests.post(url=NLU_ENDPOINT, json=self.nlu_message)
             dialog_message = self.NLU_adaptation(NLU_response.json())
-            print("Dialog Manager: ",dialog_message)
+            #print("Dialog Manager: ",dialog_message)
             dialog_answ = requests.post(url=CORE_ENDPOINT, json=dialog_message)
 
         return dialog_answ.json()
@@ -276,7 +276,7 @@ def sms_ahoy_reply():
 
     A = []
     for anw in answ:
-        print(anw["text"])
+        #print(anw["text"])
         A.append(anw["text"])
     print(A)
 
@@ -296,7 +296,7 @@ def sms_test():
 
     A = []
     for anw in answ:
-        print(anw["text"])
+        #print(anw["text"])
         A.append(anw["text"])
     print(A)
 
