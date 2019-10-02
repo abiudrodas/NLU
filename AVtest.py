@@ -16,8 +16,8 @@ import calendar
 # locale.setlocale(locale.LC_ALL, 'es_ES')
 
 # defining the api-endpoint
-NLU_ENDPOINT = "http://rrhh.northeurope.cloudapp.azure.com:5005/model/parse"
-CORE_ENDPOINT = "http://rrhh.northeurope.cloudapp.azure.com:5006/webhooks/rest/webhook"
+NLU_ENDPOINT = "http://nlu-service:5005/model/parse"
+CORE_ENDPOINT = "http://core-service:5006/webhooks/rest/webhook"
 
 app = Flask(__name__)
 #api = Api(app)
