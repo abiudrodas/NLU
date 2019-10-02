@@ -2,11 +2,6 @@
 version: "3"
 services:
 
-  duck-service:
-    image: "rasa/duckling"
-    ports:
-      - "8000:8000"
-
   action-service:
     build: ../AVCore/RRHH/actions/
     environment:
@@ -32,6 +27,11 @@ services:
     ports:
       - "5005:5005"
     entrypoint: "rasa run --enable-api --debug"
+
+    duck-service:
+      image: "rasa/duckling"
+      ports:
+        - "8000:8000"
 
   main-service:
     build: .
