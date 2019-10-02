@@ -11,19 +11,17 @@ services:
     entrypoint: "rasa run actions --debug"
 
   core-service:
-    environment:
-      - ACTIONS=http://action-service:5055/webhook
-      - LANG=es_ES
     build: ../AVCore/RRHH/
+    environment:
+      - LANG=es_ES
     ports:
       - "5006:5006"
     entrypoint: "rasa run --debug"
 
   nlu-service:
-    environment:
-      - DUCK=http://duck-service:8000/parse
-      - LANG=es_ES
     build: NLU/RRHH/
+    environment:
+      - LANG=es_ES
     ports:
       - "5005:5005"
     entrypoint: "rasa run --enable-api --debug"
