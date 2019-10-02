@@ -56,6 +56,8 @@
 - enseñame mis nominas desde junio
 - dame las nominas de mayo
 - dame la nómina de octubre 
+- quiero la nómina de enero a diciembre
+- quiero mi nómina
 
 ## intent:set_schedule_in
 - quiero registrar mi entrada
