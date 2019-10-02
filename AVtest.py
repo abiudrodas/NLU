@@ -256,7 +256,7 @@ class RRHH():
 
         if "message" in r:
             self.nlu_message["text"] = r["message"]
-            print("NLU_message",self.nlu_message)
+            #print("NLU_message",self.nlu_message)
             NLU_response = requests.post(url=NLU_ENDPOINT, json=self.nlu_message)
             dialog_message = self.NLU_adaptation(NLU_response.json())
             print("Dialog Manager: ",dialog_message)
