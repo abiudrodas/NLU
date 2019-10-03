@@ -34,6 +34,7 @@ services:
   main-service:
     build: .
     environment:
+      - ../twilio.env
       - LOCAL=null
       - LANG=es_ES
     ports:

@@ -14,6 +14,7 @@ import re
 from datetime import datetime, timedelta
 import calendar
 import os
+from os import environ
 from time import sleep
 
 # import locale
@@ -27,6 +28,11 @@ else:
     NLU_ENDPOINT = "http://nlu-service:5005/model/parse"
     CORE_ENDPOINT = "http://core-service:5006/webhooks/rest/webhook"
 
+
+if environ.get('TWILIO_SID') is not None:
+    sid = os.environ['TWILIO_SID']
+if environ.get('TWILIO_TOKEN') is not None:
+    token = os.environ['TWILIO_TOKEN']
 
 app = Flask(__name__)
 #api = Api(app)
@@ -277,8 +283,8 @@ class RRHH():
     def send_whatsapp(self, msg, phone_to):
         # Your Account Sid and Auth Token from twilio.com/console
         # DANGER! This is insecure. See http://twil.io/secure
-        account_sid = 'ACe87a63fe61178c294fd915c1ab1a5db5'
-        auth_token = 'e4e45fb2cd61f29a4973e68b922557b4'
+        account_sid = sid
+        auth_token = token
         client = Client(account_sid, auth_token)
 
         message = client.messages \
