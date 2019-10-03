@@ -14,6 +14,8 @@ import re
 from datetime import datetime, timedelta
 import calendar
 import os
+from time import sleep
+
 # import locale
 # locale.setlocale(locale.LC_ALL, 'es_ES')
 
@@ -21,7 +23,6 @@ import os
 if os.environ['LOCAL']:
     NLU_ENDPOINT = "http://rrhh.northeurope.cloudapp.azure.com:5005/model/parse"
     CORE_ENDPOINT = "http://rrhh.northeurope.cloudapp.azure.com:5006/webhooks/rest/webhook"
-    print(NLU_ENDPOINT, CORE_ENDPOINT)
 else:
     NLU_ENDPOINT = "http://nlu-service:5005/model/parse"
     CORE_ENDPOINT = "http://core-service:5006/webhooks/rest/webhook"
@@ -272,6 +273,21 @@ class RRHH():
         return dialog_answ.json()
         #return "OK"
 
+
+    def send_whatsapp(self, msg, phone_to):
+        # Your Account Sid and Auth Token from twilio.com/console
+        # DANGER! This is insecure. See http://twil.io/secure
+        account_sid = 'ACe87a63fe61178c294fd915c1ab1a5db5'
+        auth_token = 'e4e45fb2cd61f29a4973e68b922557b4'
+        client = Client(account_sid, auth_token)
+
+        message = client.messages \
+            .create(
+            from_='whatsapp:+14155238886',
+            body=msg,
+            to=phone_to
+        )
+
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_ahoy_reply():
     rh = RRHH()
@@ -284,6 +300,8 @@ def sms_ahoy_reply():
     A = []
     for anw in answ:
         #print(anw["text"])
+        rh.send_whatsapp(anw["text"],number)
+        sleep(0.05)
         A.append(anw["text"])
     #print(A)
 
@@ -294,7 +312,7 @@ def sms_ahoy_reply():
     # Add a message
     resp.message("\n\n".join(A))
 
-    return str(resp)
+    return ""
 
 @app.route("/localtest", methods=['GET', 'POST'])
 def sms_test():
@@ -314,7 +332,7 @@ def sms_test():
     # Add a message
     resp.message("\n\n".join(A))
 
-    return str(resp)
+    return ""
 
 '''-------------Finish new implementation---------------'''
 
