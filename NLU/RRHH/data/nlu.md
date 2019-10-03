@@ -136,6 +136,9 @@
 - pasado mañana
 - el jueves que viene
 - quiero pedirme el jueves
+- quiero vacaciones del 3 al 5 de diciembre
+- quiero vacaciones el lunes
+- quiero pedirme el lunes
 
 ## regex:id_code
 - ([a-z]|[A-Z]|[0-9])[0-9]{7}([a-z]|[A-Z]|[0-9])

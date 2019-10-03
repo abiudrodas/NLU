@@ -280,7 +280,7 @@ class RRHH():
         #return "OK"
 
 
-    def send_whatsapp(self, msg, phone_to):
+    def send_whatsapp(self, msg, phone_to,attachment=None):
         # Your Account Sid and Auth Token from twilio.com/console
         # DANGER! This is insecure. See http://twil.io/secure
         account_sid = sid
@@ -291,7 +291,8 @@ class RRHH():
             .create(
             from_='whatsapp:+14155238886',
             body=msg,
-            to=phone_to
+            to=phone_to,
+            media_url = attachment
         )
 
 @app.route("/sms", methods=['GET', 'POST'])
@@ -339,6 +340,17 @@ def sms_test():
     resp.message("\n\n".join(A))
 
     return str(resp)
+
+@app.route("/mms", methods=['GET', 'POST'])
+def reply_mms():
+    rh = RRHH()
+    number = "whatsapp:+34634146030"
+    attachaments = None
+
+    rh.send_whatsapp("Ya puedo enviar ficheros por aquí bitch!!!!", number, attachment=attachaments)
+    #print(A)
+    return "OK"
+
 
 '''-------------Finish new implementation---------------'''
 
