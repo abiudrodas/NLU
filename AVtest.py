@@ -307,7 +307,7 @@ def sms_ahoy_reply():
     for anw in answ:
         #print(anw["text"])
         rh.send_whatsapp(anw["text"],number)
-        sleep(0.015)
+        sleep(0.1)
         A.append(anw["text"])
     #print(A)
 
