@@ -47,7 +47,7 @@ class RRHH():
         self.nlu_message = {"text":None}
         self.dialog_message = {"message":None}
         self.basic_intents = ["greet", "fine_ask", "fine_normal", "thanks", "bye", "set_vacations",
-                              "get_vacations_available"]
+                              "get_vacations_available", "negation", "affirmative"]
 
     def get_entities(self, NLU_response):
         entities_result = []
