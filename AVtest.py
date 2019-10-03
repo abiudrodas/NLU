@@ -338,7 +338,7 @@ def sms_test():
     # Add a message
     resp.message("\n\n".join(A))
 
-    return ""
+    return str(resp)
 
 '''-------------Finish new implementation---------------'''
 
