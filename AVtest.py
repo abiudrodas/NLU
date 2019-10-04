@@ -22,11 +22,13 @@ from time import sleep
 
 # defining the api-endpoint
 if os.environ['LOCAL']:
-    NLU_ENDPOINT = "http://rrhh.northeurope.cloudapp.azure.com:5005/model/parse"
-    CORE_ENDPOINT = "http://rrhh.northeurope.cloudapp.azure.com:5006/webhooks/rest/webhook"
+    NLU_ENDPOINT = "http://localhost:5005/model/parse"
+    CORE_ENDPOINT = "http://localhost:5006/webhooks/rest/webhook"
 else:
     NLU_ENDPOINT = "http://nlu-service:5005/model/parse"
     CORE_ENDPOINT = "http://core-service:5006/webhooks/rest/webhook"
+
+print(NLU_ENDPOINT)
 
 
 if environ.get('TWILIO_SID') is not None:
@@ -47,7 +49,7 @@ class RRHH():
         self.nlu_message = {"text":None}
         self.dialog_message = {"message":None}
         self.basic_intents = ["greet", "fine_ask", "fine_normal", "thanks", "bye", "set_vacations",
-                              "get_vacations_available", "negation", "affirmative"]
+                              "get_vacations_available", "negation", "affirmative", "password_reset"]
 
     def get_entities(self, NLU_response):
         entities_result = []

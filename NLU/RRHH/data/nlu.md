@@ -140,5 +140,15 @@
 - quiero vacaciones el lunes
 - quiero pedirme el lunes
 
+## intent:password_reset
+- no recuerdo la contraseña de mi email
+- quiero cambiar la contraseña de mi correo
+- resetear password de correo
+- como cambiar la contraseña de mi correo
+- cambiar el password
+- problema con el password
+- no puedo iniciar sesion en correo
+- cambiar contraseña de password
+
 ## regex:id_code
 - ([a-z]|[A-Z]|[0-9])[0-9]{7}([a-z]|[A-Z]|[0-9])
