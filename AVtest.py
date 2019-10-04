@@ -21,7 +21,7 @@ from time import sleep
 # locale.setlocale(locale.LC_ALL, 'es_ES')
 
 # defining the api-endpoint
-if os.environ['LOCAL']:
+if 'LOCAL' in os.environ:
     NLU_ENDPOINT = "http://localhost:5005/model/parse"
     CORE_ENDPOINT = "http://localhost:5006/webhooks/rest/webhook"
 else:
@@ -29,9 +29,9 @@ else:
     CORE_ENDPOINT = "http://core-service:5006/webhooks/rest/webhook"
 
 
-if environ.get('TWILIO_SID') is not None:
+if 'TWILIO_SID' in os.environ:
     sid = os.environ['TWILIO_SID']
-if environ.get('TWILIO_TOKEN') is not None:
+if 'TWILIO_TOKEN' in os.environ:
     token = os.environ['TWILIO_TOKEN']
 
 app = Flask(__name__)
