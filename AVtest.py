@@ -28,8 +28,6 @@ else:
     NLU_ENDPOINT = "http://nlu-service:5005/model/parse"
     CORE_ENDPOINT = "http://core-service:5006/webhooks/rest/webhook"
 
-print(NLU_ENDPOINT)
-
 
 if environ.get('TWILIO_SID') is not None:
     sid = os.environ['TWILIO_SID']
