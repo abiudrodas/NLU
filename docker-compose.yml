@@ -36,7 +36,6 @@ services:
     env_file:
       - ../twilio.env
     environment:
-      - LOCAL=null
       - LANG=es_ES
     ports:
       - "5060:5060"
