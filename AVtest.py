@@ -298,7 +298,6 @@ class RRHH():
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_ahoy_reply():
     rh = RRHH()
-    urls_templates = ["http://", "https://"]
     number = request.values.get('From')
     body = request.values.get('Body')
     attachaments = None
@@ -309,8 +308,8 @@ def sms_ahoy_reply():
     A = []
     for anw in answ:
         #print(anw["text"])
-        if any(url in anw["text"] for url in urls_templates):
-            attachaments = anw["text"]
+        if "media" in anw["text"]:
+            attachaments = anw["text"].split(" ")[1]
             anw["text"] = ""
         rh.send_whatsapp(anw["text"],number, attachment=attachaments)
         sleep(0.5)
