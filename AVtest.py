@@ -312,7 +312,7 @@ def sms_ahoy_reply():
             attachaments = anw["text"].split(" ")[1]
             anw["text"] = ""
         rh.send_whatsapp(anw["text"],number, attachment=attachaments)
-        sleep(0.5)
+        sleep(0.8)
         A.append(anw["text"])
     #print(A)
 

@@ -9,6 +9,7 @@ services:
     ports:
       - "5055:5055"
     entrypoint: "rasa run actions --debug"
+    restart: always
 
   core-service:
     build: ../AVCore/RRHH/
@@ -17,6 +18,7 @@ services:
     ports:
       - "5006:5006"
     entrypoint: "rasa run -p 5006 --debug"
+    restart: always
 
   nlu-service:
     build: NLU/RRHH/
@@ -25,11 +27,13 @@ services:
     ports:
       - "5005:5005"
     entrypoint: "rasa run --enable-api --debug"
+    restart: always
 
   duck-service:
     image: "rasa/duckling"
     ports:
       - "8000:8000"
+    restart: always
 
   main-service:
     build: .
@@ -41,3 +45,4 @@ services:
       - "5060:5060"
     # just keep server alive
     entrypoint: "python AVtest.py"
+    restart: always
