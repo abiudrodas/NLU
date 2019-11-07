@@ -7,7 +7,7 @@ from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 import os
 from time import sleep
-from nlu_cases import RRHH
+from nlu_cases.RRHH import RRHH
 
 
 # import locale
