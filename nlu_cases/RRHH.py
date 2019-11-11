@@ -13,6 +13,7 @@ class RRHH():
         self.nlu_uts = NLU_utils()
         self.NLU_ENDPOINT = NLU_url
         self.CORE_ENDPOINT = Core_url
+        self.user_id = None
 
     def NLU_adaptation(self, NLU_response):
 
@@ -197,13 +198,24 @@ class RRHH():
 
         return self.dialog_message
 
-    def post(self, r):
+    def post(self, r, sender_id = None):
+
+        if sender_id is not None:
+            "TODO TODO TODO TODO"
+            "Endpoint to get the ID using the phone number"
+            if sender_id == "whatsapp:+34634146030":
+                self.user_id = "a.rojas"
+            elif sender_id == "whatsapp:+34628088748":
+                self.user_id = "i.fernandez"
+            else:
+                self.user_id = "Undefined user"
 
         if "message" in r:
             self.nlu_message["text"] = r["message"]
             # print("NLU_message",self.nlu_message)
             NLU_response = requests.post(url=self.NLU_ENDPOINT, json=self.nlu_message)
             dialog_message = self.NLU_adaptation(NLU_response.json())
+            dialog_message['sender'] = self.user_id
             # print("Dialog Manager: ",dialog_message)
             dialog_answ = requests.post(url=self.CORE_ENDPOINT, json=dialog_message)
 

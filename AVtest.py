@@ -10,9 +10,6 @@ from time import sleep
 from nlu_cases.RRHH import RRHH
 
 
-# import locale
-# locale.setlocale(locale.LC_ALL, 'es_ES')
-
 # defining the api-endpoint
 if 'LOCAL' in os.environ:
     NLU_ENDPOINT = "http://localhost:5005/model/parse"
@@ -28,8 +25,6 @@ if 'TWILIO_TOKEN' in os.environ:
 
 app = Flask(__name__)
 
-
-# api = Api(app)
 
 @app.errorhandler(404)
 def not_found(error):
@@ -60,7 +55,7 @@ def sms_ahoy_reply():
     attachaments = None
 
     data = {"message": body}
-    answ = rh.post(r=data)
+    answ = rh.post(r=data, sender_id=number)
 
     A = []
     for anw in answ:
@@ -86,7 +81,7 @@ def sms_ahoy_reply():
 @app.route("/localtest", methods=['GET', 'POST'])
 def sms_test():
     rh = RRHH(NLU_url=NLU_ENDPOINT, Core_url=CORE_ENDPOINT)
-    answ = rh.post(r=request.json)
+    answ = rh.post(r=request.json, sender_id="whatsapp:+34634146030")
 
     A = []
     for anw in answ:
