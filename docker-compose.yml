@@ -6,6 +6,7 @@ services:
     build: ../AVCore/RRHH/actions/
     environment:
       - LANG=es_ES
+      - PYTHONIOENCODING=utf-8
     ports:
       - "5055:5055"
     entrypoint: "rasa run actions --debug"
@@ -15,6 +16,7 @@ services:
     build: ../AVCore/RRHH/
     environment:
       - LANG=es_ES
+      - PYTHONIOENCODING=utf-8
     ports:
       - "5006:5006"
     entrypoint: "rasa run -p 5006 --debug"
@@ -24,6 +26,7 @@ services:
     build: NLU/RRHH/
     environment:
       - LANG=es_ES
+      - PYTHONIOENCODING=utf-8
     ports:
       - "5005:5005"
     entrypoint: "rasa run --enable-api --debug"
@@ -41,6 +44,7 @@ services:
       - ../twilio.env
     environment:
       - LANG=es_ES
+      - PYTHONIOENCODING=utf-8
     ports:
       - "5060:5060"
     # just keep server alive
