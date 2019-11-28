@@ -33,6 +33,16 @@ class NLU_utils():
                         entities_result.append(tem_vect)
         return entities_result
 
+    def get_period_from_text(self, Response):
+        categories = ["mañana", "tarde", "medio dia"]
+        if "text" in Response:
+            period = [word for word in categories if word in Response["text"]]
+            if period:
+                return ["period", period[0]]
+            else:
+                return [None, None]
+
+
     def find_dates(self,string):
         return re.findall("\d{4}[-]?\d{1,2}[-]?\d{1,2}[T]\d{1,2}:\d{1,2}:\d{1,2}[.]?\d{1,3}[-]\d{1,2}:\d{1,2}", string)
 

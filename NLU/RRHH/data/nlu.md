@@ -132,7 +132,6 @@
 - todo el mes de agosto
 - el proximo lunes
 - el 17 de diciembre
-- mañana
 - pasado mañana
 - el jueves que viene
 - quiero pedirme el jueves
@@ -149,6 +148,88 @@
 - problema con el password
 - no puedo iniciar sesion en correo
 - cambiar contraseña de password
+
+## intent:simple_appointment
+- quiero una cita
+- agenda una cita
+- pideme una cita 
+- solicita una cita
+- quiero solicitar una cita 
+- cita 
+- quiero agendar un cita
+- quiero obtener una cita 
+- pon una cita
+- quiero agendar una cita para el 25 de julio
+- cita para el 3 de enero
+- agenda una cita para el 25 de diciembre
+- pide una cita para el 23 de agosto
+- quiero una cita para mañana
+
+## intent:category_appointment
+- por la mañana
+- durante la mañana
+- mañana
+- en la mañana 
+- por la tarde 
+- durante la tarde
+- en la tarde 
+- a medio dia
+- durante el medio dia
+- medio dia
+- tarde
+
+## intent:appointment_with_category
+- quiero una cita por la mañana
+- agenda una cita por la tarde
+- pideme una cita al medio dia
+- solicita una cita durante la mañana
+- quiero solicitar una cita mañana por la tarde
+- cita el 3 de enero por la mañana
+- quiero agendar un cita mañana 
+- quiero obtener una cita para el jueves por la tarde
+- pon una cita para el lunes a medio dia
+- quiero agendar una cita para el 25 de julio a medio dia
+- cita para el 3 de enero por la mañana
+- agenda una cita para el 25 de diciembre por la tarde
+- pide una cita para el 23 de agosto por la mañana
+
+## intent:appointment_with_hour
+- quiero una cita a las 12
+- agenda una cita a las 3 de la tarde
+- pideme una cita a las 5 de la tarde
+- solicita una cita a las 10 de la mañana
+- quiero solicitar una cita mañana a las 17 hrs
+- cita el 3 de enero a las 10:00 
+- quiero agendar un cita mañana a las 18 hrs 
+- quiero obtener una cita para el jueves a las 6 tarde
+- pon una cita para el lunes a las 12:00
+- quiero agendar una cita para el 25 de julio a las 9
+
+## intent:get_availability
+- dime la disponibilidad esta mañana
+- que horas hay disponibles para hoy
+- hay diponibilidad para el 12 de agosto?
+- que disponibilidad hay el miercoles
+- durante la tarde que horas hay disponibles
+- que horarios hay para el lunes
+
+## intent:spec_hour
+- a las 12
+- a la 5
+- a las 17hrs
+- a las 3 de la tarde
+- a las 5 de la tarde
+- 5 de la tade
+- a las 8 de la mañana
+- a las 8hrs
+- a las 17:00
+- a las 10:00
+- a las 09:00
+- 15 hrs
+- 08:00 hrs
+- 9 hrs
+- 10am
+- 11 am
 
 ## regex:id_code
 - ([a-z]|[A-Z]|[0-9])[0-9]{7}([a-z]|[A-Z]|[0-9])

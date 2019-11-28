@@ -3,9 +3,10 @@ from datetime import datetime, timedelta
 import calendar
 from nlu_cases.nlu_utils import NLU_utils
 
+
 class RRHH():
 
-    def __init__(self, NLU_url = None, Core_url = None):
+    def __init__(self, NLU_url=None, Core_url=None):
         self.nlu_message = {"text": None}
         self.dialog_message = {"message": None}
         self.basic_intents = ["greet", "fine_ask", "fine_normal", "thanks", "bye", "set_vacations",
@@ -36,6 +37,11 @@ class RRHH():
                     if entity[0] == "id_code":
                         self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
                         # print(self.dialog_message)
+
+            elif NLU_response["intent"]["name"] == "category_appointment":
+                entity = self.nlu_uts.get_period_from_text(NLU_response)
+                new_dic = self.nlu_uts.Convert(entity)
+                self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
 
             elif NLU_response["intent"]["name"] == "get_nomina":
                 entities = self.nlu_uts.get_entities(NLU_response)
@@ -75,15 +81,15 @@ class RRHH():
 
                         self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
 
-            elif NLU_response["intent"]["name"] in ["set_schedule_in", "set_schedule_out"]:
+            elif NLU_response["intent"]["name"] in ["set_schedule_in", "set_schedule_out", "appointment_with_hour",
+                                                    "simple_appointment", "appointment_with_category", "spec_hour"]:
                 entities = self.nlu_uts.get_entities(NLU_response)
-                # print("Entidades: ",entities)
+                print("Intent: ", NLU_response["intent"]["name"])
 
                 if len(entities) > 0:
                     for entity in entities:
                         new_dic = self.nlu_uts.Convert(entity)
-                        # print(new_dic)
-                        if entity[0] in ["day", "hour"]:
+                        if entity[0] in ["day", "hour", "minute"]:
                             dates = self.nlu_uts.find_dates(new_dic[entity[0]])
                             for date in dates:
                                 date = date.split('T')
@@ -97,7 +103,11 @@ class RRHH():
                                     user_date[2] + "/" + user_date[1] + "/" + user_date[0], date_format)
                                 now = datetime.strptime(day + "/" + month + "/" + year, date_format)
 
-                                if user_date_formated > now:
+                                if (user_date_formated > now) and (
+                                        NLU_response["intent"]["name"] not in ["appointment_with_hour",
+                                                                               "simple_appointment",
+                                                                               "appointment_with_category"]):
+
                                     user_day_ = [word for word in days if word in NLU_response["text"]]
                                     if entity[0] == "hour":
                                         if len(user_day_) < 1:
@@ -106,6 +116,7 @@ class RRHH():
                                             real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime(
                                                 '%d/%m/%Y')
                                             new_dic = {"day": user_hour + " " + real_date}
+
                                         else:
                                             real_date = user_date_formated - timedelta(days=7)
                                             real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime(
@@ -114,17 +125,30 @@ class RRHH():
 
                                     elif entity[0] == "day":
                                         real_date = user_date_formated - timedelta(days=7)
-                                        # print(real_date)
                                         real_date = datetime.strptime(str(real_date), '%Y-%m-%d %H:%M:%S').strftime(
                                             '%d/%m/%Y')
                                         new_dic = {"day": user_hour + " " + real_date}
-
-
                                 else:
                                     real_date = datetime.strptime(str(user_date_formated),
                                                                   '%Y-%m-%d %H:%M:%S').strftime(
-                                        '%d/%m/%Y')
-                                    new_dic = {"day": user_hour + " " + str(real_date)}
+                                        '%d-%m-%Y')
+                                    if user_hour == '00:00:00':
+                                        user_hour = '12:00:00'
+
+                                    if NLU_response["intent"]["name"] == "spec_hour":
+                                        new_dic = {"hour": user_hour}
+                                    else:
+                                        new_dic = {"day": user_hour + " " + str(real_date)}
+
+                        elif (entity[0] in ["number"]) and (NLU_response["intent"]["name"] in ["simple_appointment",
+                                                                                               "appointment_with_category", "spec_hour"]):
+
+                            if NLU_response["intent"]["name"] == "spec_hour":
+                                new_dic = {"hour": str(entity[1])+':00:00'}
+                            else:
+                                hour = "00:00:00"
+                                register = hour + " " + day + "-" + month + "-" + year
+                                new_dic = {"day": register}
 
                     self.dialog_message["message"] = NLU_response["intent"]["name"] + str(
                         new_dic).replace("'", '"')
@@ -195,10 +219,9 @@ class RRHH():
                                 '%d/%m/%Y')
                             new_dic["day"] = real_date
                     self.dialog_message["message"] = NLU_response["intent"]["name"] + str(new_dic).replace("'", '"')
-
         return self.dialog_message
 
-    def post(self, r, sender_id = None):
+    def post(self, r, sender_id=None):
 
         if sender_id is not None:
             "TODO TODO TODO TODO"
